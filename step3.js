@@ -51,16 +51,57 @@
     return roundUp10(raw);
   }
 
-  function calcScore(fu, han, isDealer){
+  function calcBase(fu, han){
     var base = fu * Math.pow(2, 2 + han);
     var mangan = false;
     if (base > 2000){ base = 2000; mangan = true; }
-    if (mangan){
-      return { score: isDealer ? 12000 : 8000, base: base, mangan: true };
+    return { base: base, mangan: mangan };
+  }
+
+  function calcScore(fu, han, isDealer){
+    var b = calcBase(fu, han);
+    if (b.mangan){
+      return { score: isDealer ? 12000 : 8000, base: b.base, mangan: true };
     }
     var mult = isDealer ? 6 : 4;
-    return { score: roundUp100(base * mult), base: base, mangan: false };
+    return { score: roundUp100(b.base * mult), base: b.base, mangan: false };
   }
+
+  // ツモ：子の和了りは「子が払う額-親が払う額」、親の和了りは「オール」で全員同額。
+  function calcTsumoNonDealerWin(fu, han){
+    var b = calcBase(fu, han).base;
+    return { each: roundUp100(b), dealer: roundUp100(b * 2) };
+  }
+  function calcTsumoDealerWin(fu, han){
+    var b = calcBase(fu, han).base;
+    return { each: roundUp100(b * 2) };
+  }
+
+  var TABLE_FU = [20,25,30,40,50,60,70,80,90,100,110];
+  var TABLE_HAN = [1,2,3,4];
+
+  function renderScoreTable(){
+    var body = document.getElementById("scoreTableBody");
+    if (!body) return;
+    body.innerHTML = "";
+    TABLE_FU.forEach(function(fu){
+      var tr = document.createElement("tr");
+      var cells = "<td>" + fu + "符</td>";
+      TABLE_HAN.forEach(function(han){
+        var ko = calcScore(fu, han, false);
+        var oya = calcScore(fu, han, true);
+        var tsumoKo = calcTsumoNonDealerWin(fu, han);
+        var tsumoOya = calcTsumoDealerWin(fu, han);
+        var ronLine = ko.mangan ? "満貫" : (fmt2(ko.score) + "/" + fmt2(oya.score));
+        var tsumoLine = fmt2(tsumoKo.each) + "-" + fmt2(tsumoKo.dealer) + "/" + fmt2(tsumoOya.each) + "オール";
+        cells += "<td>ロン " + ronLine + "<br><span class=\"tsumo-line\">ツモ " + tsumoLine + "</span></td>";
+      });
+      tr.innerHTML = cells;
+      body.appendChild(tr);
+    });
+  }
+
+  function fmt2(n){ return n.toLocaleString("ja-JP"); }
 
   var STORE_KEY = "step3-drill-stats-v1";
   var stats = { correct:0, total:0, streak:0 };
@@ -181,9 +222,12 @@
     });
 
     var roleLabel = current.isDealer ? "親" : "子";
-    var fuLine = current.rawFu === current.fu
-      ? current.fu + "符"
-      : current.rawFu + "符 → 切り上げ" + current.fu + "符";
+    var fuSumLine =
+      "副底20符＋待ち方" + current.wait.fu + "符＋和了り方" + current.method.fu +
+      "符＋頭" + current.head.fu + "符＋面子" + current.meld.fu + "符 ＝ " + current.rawFu + "符";
+    var fuRoundLine = current.rawFu === current.fu
+      ? "（10の位ちょうどなので切り上げなし）"
+      : "→ 切り上げて " + current.fu + "符";
     var baseLine = current.mangan
       ? current.fu + "符 × 2^(2+" + current.han + "翻) は2000を超えるため満貫（頭打ち）"
       : current.fu + "符 × 2^(2+" + current.han + "翻) = " + current.base;
@@ -195,7 +239,7 @@
         "<div class=\"fb-title\">" + (isCorrect ? "正解！" : "おしい") + "</div>" +
         (isCorrect ? "" : "正解は " + fmt(current.correct)) +
         "<div class=\"fb-breakdown\">" +
-          "符の内訳: 20+" + current.wait.fu + "+" + current.method.fu + "+" + current.head.fu + "+" + current.meld.fu + " = " + fuLine + "<br>" +
+          fuSumLine + " " + fuRoundLine + "<br>" +
           baseLine + "<br>" +
           roleLabel + "・ロン: " + fmt(current.correct) +
         "</div>" +
@@ -209,6 +253,7 @@
   document.getElementById("nextBtn").addEventListener("click", newQuestion);
 
   renderStats();
+  renderScoreTable();
   newQuestion();
   Furigana.apply(document.body);
   Glossary.apply(document.body);

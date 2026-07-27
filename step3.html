@@ -37,12 +37,28 @@
       <summary>計算の流れをおさらいする</summary>
       <div class="body">
         <p>点数は次の手順で決まります。</p>
-        <div class="ex-row"><span>① 符を合計</span><strong>20（副底）＋待ち方＋和了り方＋頭＋面子</strong></div>
-        <div class="ex-row"><span>② 切り上げ</span><strong>1の位を10の位に切り上げ</strong></div>
-        <div class="ex-row"><span>③ 基本点</span><strong>符 × 2^(2＋翻)</strong></div>
-        <div class="ex-row"><span>④ 点数（ロン）</span><strong>子＝基本点×4／親＝基本点×6（100点未満切り上げ）</strong></div>
-        <p class="mt-note">③の基本点が2000を超えるときは2000点に頭打ちされ、満貫（子8,000点／親12,000点）になります。STEP1の「4翻はだいたい満貫」の話につながる部分です。</p>
+        <div class="ex-row"><span>① 翻を数える</span><strong>役の翻＋ドラの翻を合計</strong></div>
+        <div class="ex-row"><span>② 符を合計</span><strong>20（副底）＋待ち方＋和了り方＋頭＋面子</strong></div>
+        <div class="ex-row"><span>③ 符を切り上げ</span><strong>1の位を10の位に切り上げ</strong></div>
+        <div class="ex-row"><span>④ 基本点</span><strong>符 × 2^(2＋翻)</strong></div>
+        <div class="ex-row"><span>⑤ 点数（ロン）</span><strong>子＝基本点×4／親＝基本点×6（100点未満切り上げ）</strong></div>
+        <p class="mt-note">④の基本点が2000を超えるときは2000点に頭打ちされ、満貫（子8,000点／親12,000点）になります。STEP1の「4翻はだいたい満貫」の話につながる部分です。</p>
+        <p class="mt-note">実際の対局では、①と③まで分かれば、毎回この式を計算しなくても、下の点数早見表から翻と符が交わるマスを読み取るだけで点数が分かります。</p>
       </div>
+    </details>
+  </div>
+
+  <div class="panel">
+    <details class="explainer">
+      <summary>点数早見表（符×翻／子・親）を見る</summary>
+      <div class="body tablewrap">
+        <table class="ref">
+          <caption>点数早見表（ロン・ツモ／子・親）</caption>
+          <thead><tr><th>符</th><th>1翻</th><th>2翻</th><th>3翻</th><th>4翻</th></tr></thead>
+          <tbody id="scoreTableBody"></tbody>
+        </table>
+      </div>
+      <p class="mt-note">「ロン」は子の点数／親の点数。「ツモ」は子が和了ったとき「子の支払い−親の支払い」、親が和了ったときは全員同額なので「〇〇オール」と表記しています。満貫は子8,000点／親12,000点（ツモは子2,000-4,000／親4,000オール）で固定です（5翻以上や、6〜7翻の跳満などはSTEP1の早見表を参照してください）。</p>
     </details>
   </div>
 
