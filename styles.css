@@ -193,6 +193,9 @@ h1{
 .menu-badge.soon{ background:var(--bg-2); color:var(--ink-soft); }
 .menu-card.disabled{ opacity:.55; pointer-events:none; }
 
+.mt-note{ margin-top:12px; }
+.panel-spaced{ margin-top:18px; }
+
 .section-title{
   font-family:"Yu Mincho","YuMincho","Hiragino Mincho ProN",serif;
   font-size:19px; font-weight:700; margin:0 0 8px;

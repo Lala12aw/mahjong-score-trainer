@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; object-src 'none';">
 <title>点数計算トレーニング｜麻雀 点数計算 特訓サイト</title>
 <link rel="stylesheet" href="styles.css">
 <script src="furigana.js"></script>
@@ -61,31 +62,7 @@
   <footer>各ドリルの正解記録は、このブラウザ内にだけ保存されます。</footer>
 </div>
 
-<script>
-(function(){
-  "use strict";
-
-  function readStats(key){
-    try {
-      var s = JSON.parse(localStorage.getItem(key) || "null");
-      if (s && typeof s.total === "number" && s.total > 0) return s;
-    } catch(e){}
-    return null;
-  }
-
-  function paint(elId, key){
-    var el = document.getElementById(elId);
-    var s = readStats(key);
-    if (s) el.textContent = "正解 " + s.correct + " / " + s.total;
-  }
-
-  paint("stat-step1", "hankei-drill-stats-v1");
-  paint("stat-step2", "fu-drill-stats-v1");
-
-  Furigana.apply(document.body);
-  Glossary.apply(document.body);
-})();
-</script>
+<script src="home.js"></script>
 
 </body>
 </html>

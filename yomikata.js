@@ -1,0 +1,1 @@
+Furigana.apply(document.body);
