@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>点数計算トレーニング｜麻雀 点数計算 特訓サイト</title>
+<link rel="stylesheet" href="styles.css">
+<script src="furigana.js"></script>
+<script src="glossary.js"></script>
+</head>
+<body>
+
+<div class="wrap">
+  <nav class="steps">
+    <a href="index.html" class="current">ホーム</a>
+    <a href="yomikata.html">読み方ガイド</a>
+    <a href="step1.html">STEP1 翻計算</a>
+    <a href="fu-drill.html">STEP2 符パーツ暗記</a>
+  </nav>
+
+  <header>
+    <div class="eyebrow"><span class="tile">東</span>麻雀 点数計算 特訓</div>
+    <h1>点数計算トレーニング</h1>
+    <p class="lede">知識ゼロから、麻雀の点数計算を少しずつ身につけるための練習サイトです。まずは気になるところから始めてください。</p>
+  </header>
+
+  <div class="menu">
+    <a class="menu-card" href="yomikata.html">
+      <div class="menu-top">
+        <h2>読み方ガイド</h2>
+        <span class="menu-badge">用語集</span>
+      </div>
+      <p>和了（ホーラ／あがり）のように、読み方が複数ある・見た目通りに読まない麻雀用語をまとめました。まず言葉に慣れたい人はここから。</p>
+    </a>
+
+    <a class="menu-card" href="step1.html">
+      <div class="menu-top">
+        <h2>STEP1 翻計算ドリル</h2>
+        <span class="menu-stat" id="stat-step1">まだ挑戦していません</span>
+      </div>
+      <p>符を考えなくても点数が決まる「満貫〜役満」だけを覚える練習です。点数計算の入り口として、まずはここから。</p>
+    </a>
+
+    <a class="menu-card" href="fu-drill.html">
+      <div class="menu-top">
+        <h2>STEP2 符パーツ暗記ドリル</h2>
+        <span class="menu-stat" id="stat-step2">まだ挑戦していません</span>
+      </div>
+      <p>符計算の部品（待ち方・和了り方・頭・面子）を1つずつ4択で覚えます。組み合わせて計算するための土台づくりです。</p>
+    </a>
+
+    <div class="menu-card disabled">
+      <div class="menu-top">
+        <h2>STEP3 符＋翻の通し計算</h2>
+        <span class="menu-badge soon">準備中</span>
+      </div>
+      <p>符と翻を組み合わせて、実際の点数を最初から最後まで計算する総合練習です。近日公開予定。</p>
+    </div>
+  </div>
+
+  <footer>各ドリルの正解記録は、このブラウザ内にだけ保存されます。</footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  function readStats(key){
+    try {
+      var s = JSON.parse(localStorage.getItem(key) || "null");
+      if (s && typeof s.total === "number" && s.total > 0) return s;
+    } catch(e){}
+    return null;
+  }
+
+  function paint(elId, key){
+    var el = document.getElementById(elId);
+    var s = readStats(key);
+    if (s) el.textContent = "正解 " + s.correct + " / " + s.total;
+  }
+
+  paint("stat-step1", "hankei-drill-stats-v1");
+  paint("stat-step2", "fu-drill-stats-v1");
+
+  Furigana.apply(document.body);
+  Glossary.apply(document.body);
+})();
+</script>
+
+</body>
+</html>

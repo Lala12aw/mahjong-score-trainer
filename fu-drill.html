@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>符パーツ暗記ドリル｜点数計算 特訓 STEP2</title>
+<link rel="stylesheet" href="styles.css">
+<script src="furigana.js"></script>
+<script src="glossary.js"></script>
+</head>
+<body>
+
+<div class="wrap">
+  <nav class="steps">
+    <a href="index.html">ホーム</a>
+    <a href="yomikata.html">読み方ガイド</a>
+    <a href="step1.html">STEP1 翻計算</a>
+    <a href="fu-drill.html" class="current">STEP2 符パーツ暗記</a>
+  </nav>
+
+  <header>
+    <div class="eyebrow"><span class="tile">發</span>STEP 2 ・ 符の部品ドリル</div>
+    <h1>符パーツ暗記ドリル</h1>
+    <p class="lede">符計算は「待ち方」「和了り方」「頭」「面子」という4つの部品の符を足し算するだけです。まずは部品1つ1つの符を単体で覚えましょう。組み合わせて計算するのはSTEP3で練習します。</p>
+  </header>
+
+  <div class="note">
+    <span class="note-mark">※</span>
+    <span>ふりがなは代表的な読み方の一例です。麻雀の用語は地域や人によって読み方が分かれることがあります（例：数牌＝すうはい・シューパイ）。実際の対局では、他の読み方も聞き取れるようにしておきましょう。</span>
+  </div>
+
+  <div class="panel">
+    <details class="explainer" id="explainer">
+      <summary>符の部品とその一覧を見る</summary>
+      <div class="body">
+        <p>どんな手でも、符は必ず<strong>20符（副底）</strong>から始まり、そこに以下の部品を足していきます。</p>
+        <div class="ex-row"><span>待ち方</span><strong>両面・シャンポン＝0／嵌張・辺張・単騎＝2</strong></div>
+        <div class="ex-row"><span>和了り方</span><strong>ツモ＝2／門前ロン＝10／副露ロン＝0</strong></div>
+        <div class="ex-row"><span>頭（雀頭）</span><strong>数牌・客風＝0／役牌＝2</strong></div>
+        <div class="ex-row"><span>面子</span><strong>下の早見表を参照</strong></div>
+        <p style="margin-top:10px;">面子は「暗刻は明刻の2倍」「槓子は刻子の4倍」「19・字牌は2〜8の2倍」という倍々ルールで覚えると早いです。</p>
+      </div>
+    </details>
+  </div>
+
+  <div class="scorebar">
+    <div class="stat"><b id="statCorrect">0</b><span>正解</span></div>
+    <div class="divider"></div>
+    <div class="stat"><b id="statTotal">0</b><span>出題数</span></div>
+    <div class="divider"></div>
+    <div class="stat"><b id="statStreak">0</b><span>連続正解</span></div>
+  </div>
+
+  <div class="qcard">
+    <div class="badges">
+      <span class="badge cat" id="catBadge">面子</span>
+    </div>
+    <p class="qtext" id="qText">暗刻（中張牌：2〜8）</p>
+    <p class="qcaption">何符でしょう？</p>
+    <div class="choices" id="choices"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="actions"><button class="next-btn" id="nextBtn">次の問題 →</button></div>
+  </div>
+
+  <div class="panel" style="margin-top:18px;">
+    <details class="explainer">
+      <summary>面子の符・早見表を見る</summary>
+      <div class="body tablewrap">
+        <table class="ref">
+          <caption>刻子・槓子の符（明＝ポン等で鳴いた／暗＝手の中で完成）</caption>
+          <thead><tr><th>面子の種類</th><th>2〜8の数牌</th><th>1・9・字牌</th></tr></thead>
+          <tbody>
+            <tr><td>明刻（ポン）</td><td>2符</td><td>4符</td></tr>
+            <tr><td>暗刻（手の中）</td><td>4符</td><td>8符</td></tr>
+            <tr><td>明槓（大明槓・加槓）</td><td>8符</td><td>16符</td></tr>
+            <tr><td>暗槓</td><td>16符</td><td>32符</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+  </div>
+
+  <footer>正解すると自動で記録されます（このブラウザ内のみ）。何度でもやり直せます。</footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var ITEMS = [
+    { cat:"待ち方", text:"両面待ち", fu:0 },
+    { cat:"待ち方", text:"シャンポン待ち", fu:0 },
+    { cat:"待ち方", text:"嵌張待ち", fu:2 },
+    { cat:"待ち方", text:"辺張待ち", fu:2 },
+    { cat:"待ち方", text:"単騎待ち", fu:2 },
+
+    { cat:"和了り方", text:"ツモ和了（通常時）", fu:2 },
+    { cat:"和了り方", text:"ロン和了・門前", fu:10 },
+    { cat:"和了り方", text:"ロン和了・副露あり（鳴きあり）", fu:0 },
+
+    { cat:"頭（雀頭）", text:"数牌または客風牌の頭", fu:0 },
+    { cat:"頭（雀頭）", text:"役牌（三元牌・自風・場風）の頭", fu:2 },
+
+    { cat:"面子", text:"明刻（中張牌：2〜8）", fu:2 },
+    { cat:"面子", text:"暗刻（中張牌：2〜8）", fu:4 },
+    { cat:"面子", text:"明刻（么九牌：1・9・字牌）", fu:4 },
+    { cat:"面子", text:"暗刻（么九牌：1・9・字牌）", fu:8 },
+    { cat:"面子", text:"明槓（中張牌：2〜8）", fu:8 },
+    { cat:"面子", text:"暗槓（中張牌：2〜8）", fu:16 },
+    { cat:"面子", text:"明槓（么九牌：1・9・字牌）", fu:16 },
+    { cat:"面子", text:"暗槓（么九牌：1・9・字牌）", fu:32 }
+  ];
+
+  var ALL_VALUES = Array.from(new Set(ITEMS.map(function(i){ return i.fu; })));
+
+  function fmt(n){ return n + "符"; }
+
+  function shuffle(arr){
+    var a = arr.slice();
+    for (var i=a.length-1;i>0;i--){
+      var j = Math.floor(Math.random()*(i+1));
+      var t=a[i]; a[i]=a[j]; a[j]=t;
+    }
+    return a;
+  }
+
+  var STORE_KEY = "fu-drill-stats-v1";
+  var stats = { correct:0, total:0, streak:0 };
+  try {
+    var saved = JSON.parse(localStorage.getItem(STORE_KEY) || "null");
+    if (saved) stats = saved;
+  } catch(e){}
+
+  function saveStats(){
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(stats)); } catch(e){}
+  }
+
+  function renderStats(){
+    document.getElementById("statCorrect").textContent = stats.correct;
+    document.getElementById("statTotal").textContent = stats.total;
+    document.getElementById("statStreak").textContent = stats.streak;
+  }
+
+  var current = null;
+  var lastIndex = -1;
+
+  function newQuestion(){
+    var idx;
+    do { idx = Math.floor(Math.random()*ITEMS.length); } while (idx === lastIndex && ITEMS.length > 1);
+    lastIndex = idx;
+    var item = ITEMS[idx];
+
+    var sameCat = ITEMS.filter(function(i){ return i.cat===item.cat && i.fu!==item.fu; });
+    var distractorPool = shuffle(sameCat).map(function(i){ return i.fu; });
+    ALL_VALUES.forEach(function(v){ if (v!==item.fu && distractorPool.indexOf(v)===-1) distractorPool.push(v); });
+
+    var distractors = [];
+    distractorPool.forEach(function(v){
+      if (distractors.length<3 && v!==item.fu && distractors.indexOf(v)===-1) distractors.push(v);
+    });
+
+    var choices = shuffle([item.fu].concat(distractors));
+
+    current = { item:item, correct:item.fu, answered:false };
+
+    document.getElementById("catBadge").textContent = item.cat;
+    document.getElementById("qText").textContent = item.text;
+
+    var wrap = document.getElementById("choices");
+    wrap.innerHTML = "";
+    choices.forEach(function(v){
+      var btn = document.createElement("button");
+      btn.className = "choice";
+      btn.type = "button";
+      btn.textContent = fmt(v);
+      btn.addEventListener("click", function(){ onAnswer(v, btn); });
+      wrap.appendChild(btn);
+    });
+
+    var fb = document.getElementById("feedback");
+    fb.className = "feedback";
+    fb.innerHTML = "";
+    document.getElementById("nextBtn").classList.remove("show");
+
+    Furigana.apply(document.querySelector(".qcard"));
+    Glossary.apply(document.querySelector(".qcard"));
+  }
+
+  function onAnswer(value, btnEl){
+    if (current.answered) return;
+    current.answered = true;
+    var isCorrect = value === current.correct;
+
+    stats.total += 1;
+    if (isCorrect){ stats.correct += 1; stats.streak += 1; }
+    else { stats.streak = 0; }
+    saveStats();
+    renderStats();
+
+    var buttons = document.querySelectorAll("#choices .choice");
+    buttons.forEach(function(b){
+      b.disabled = true;
+      var v = parseInt(b.textContent.replace(/[^0-9]/g,""),10);
+      if (v === current.correct) b.classList.add("correct");
+      else if (b === btnEl) b.classList.add("wrong");
+      else b.classList.add("dim");
+    });
+
+    var fb = document.getElementById("feedback");
+    fb.className = "feedback " + (isCorrect ? "ok" : "ng");
+    fb.innerHTML = isCorrect
+      ? "<div><div class=\"fb-title\">正解！</div>" + current.item.text + "＝" + fmt(current.correct) + "</div>"
+      : "<div><div class=\"fb-title\">おしい</div>正解は " + fmt(current.correct) + "（" + current.item.text + "）</div>";
+
+    document.getElementById("nextBtn").classList.add("show");
+    Furigana.apply(fb);
+    Glossary.apply(fb);
+  }
+
+  document.getElementById("nextBtn").addEventListener("click", newQuestion);
+
+  renderStats();
+  newQuestion();
+  Furigana.apply(document.body);
+  Glossary.apply(document.body);
+})();
+</script>
+
+</body>
+</html>
