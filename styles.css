@@ -297,6 +297,8 @@ details.explainer .body{ margin-top:12px; padding-top:12px; border-top:1px dashe
   cursor:pointer;
   transition: transform .12s ease, border-color .12s ease, background .12s ease;
 }
+.choices-pair{ grid-template-columns:1fr; }
+.choices-pair .choice{ font-size:15.5px; }
 .choice:hover{ border-color:var(--accent); transform: translateY(-1px); }
 .choice:focus-visible{ outline:3px solid var(--focus); outline-offset:2px; }
 .choice[disabled]{ cursor:default; }

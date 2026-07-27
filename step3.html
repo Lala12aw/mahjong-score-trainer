@@ -51,6 +51,7 @@
   <div class="panel">
     <details class="explainer">
       <summary>点数早見表（符×翻／子・親）を見る</summary>
+      <p>各マスは上から「ロン」「ツモ(子の時)」「ツモ(親の時)」の3行です。見方は左上（1翻・20符）のマスに例として書いてあります。それ以外のマスは同じ並び順で数字だけを示しています。</p>
       <div class="body tablewrap">
         <table class="ref">
           <caption>点数早見表（ロン・ツモ／子・親）</caption>
@@ -58,7 +59,7 @@
           <tbody id="scoreTableBody"></tbody>
         </table>
       </div>
-      <p class="mt-note">「ロン」は子の点数／親の点数。「ツモ」は子が和了ったとき「子の支払い−親の支払い」、親が和了ったときは全員同額なので「〇〇オール」と表記しています。満貫は子8,000点／親12,000点（ツモは子2,000-4,000／親4,000オール）で固定です（5翻以上や、6〜7翻の跳満などはSTEP1の早見表を参照してください）。</p>
+      <p class="mt-note">5翻以上や、6〜7翻の跳満などはSTEP1の早見表を参照してください。</p>
     </details>
   </div>
 
@@ -84,8 +85,8 @@
       <div class="hs-row"><span>面子</span><strong id="hsMeld">面子はすべて順子</strong></div>
     </div>
 
-    <p class="qcaption">符と翻を合計すると、点数はいくつ？</p>
-    <div class="choices" id="choices"></div>
+    <p class="qcaption">和了ったときの点数はいくつ？</p>
+    <div class="choices choices-pair" id="choices"></div>
     <div class="feedback" id="feedback"></div>
     <div class="actions"><button class="next-btn" id="nextBtn">次の問題 →</button></div>
   </div>

@@ -92,9 +92,22 @@
         var oya = calcScore(fu, han, true);
         var tsumoKo = calcTsumoNonDealerWin(fu, han);
         var tsumoOya = calcTsumoDealerWin(fu, han);
-        var ronLine = ko.mangan ? "満貫" : (fmt2(ko.score) + "/" + fmt2(oya.score));
-        var tsumoLine = fmt2(tsumoKo.each) + "-" + fmt2(tsumoKo.dealer) + "/" + fmt2(tsumoOya.each) + "オール";
-        cells += "<td>ロン " + ronLine + "<br><span class=\"tsumo-line\">ツモ " + tsumoLine + "</span></td>";
+        var isLegendCell = (fu === TABLE_FU[0] && han === TABLE_HAN[0]);
+
+        var ronPrefix = isLegendCell ? "ロン：" : "";
+        var tsumoKoPrefix = isLegendCell ? "ツモ(子の時)：" : "";
+        var tsumoOyaPrefix = isLegendCell ? "ツモ(親の時)：" : "";
+        var koLabel = isLegendCell ? "子" : "";
+        var oyaLabel = isLegendCell ? "親" : "";
+
+        var ronLine = ko.mangan ? "満貫" : (ronPrefix + koLabel + fmt2(ko.score) + "／" + oyaLabel + fmt2(oya.score));
+        var tsumoKoLine = tsumoKoPrefix + koLabel + fmt2(tsumoKo.each) + "・" + oyaLabel + fmt2(tsumoKo.dealer);
+        var tsumoOyaLine = tsumoOyaPrefix + fmt2(tsumoOya.each) + "オール";
+        cells += "<td>" +
+          ronLine + "<br>" +
+          "<span class=\"tsumo-line\">" + tsumoKoLine + "</span><br>" +
+          "<span class=\"tsumo-line\">" + tsumoOyaLine + "</span>" +
+        "</td>";
       });
       tr.innerHTML = cells;
       body.appendChild(tr);
@@ -122,6 +135,14 @@
 
   var current = null;
 
+  // 各選択肢は「その符・翻の子/親両方の点数」を表示する。役割の取り違えで
+  // 迷わないよう、選択肢自体に子と親の両方を書き、正誤はテキスト全体で判定する。
+  function pairText(fu, han){
+    var ko = calcScore(fu, han, false);
+    var oya = calcScore(fu, han, true);
+    return "子" + fmt(ko.score) + "／親" + fmt(oya.score);
+  }
+
   function newQuestion(){
     var han = 1 + Math.floor(Math.random()*4); // 1..4
     var isDealer = Math.random() < 0.5;
@@ -133,45 +154,48 @@
     var fu = calcFu(wait, method, head, meld);
     var result = calcScore(fu, han, isDealer);
     var correct = result.score;
-
-    // 距離のある誤答候補を作る：翻違い・符の切り上げ忘れ・役割違い
-    var distractorPool = [];
     var rawFu = 20 + wait.fu + method.fu + head.fu + meld.fu;
-    if (rawFu !== fu){
-      var noRound = calcScore(rawFu, han, isDealer).score;
-      distractorPool.push(noRound);
+
+    var correctText = pairText(fu, han);
+
+    // 距離のある誤答候補（別の符・翻の組み合わせ）を作る：
+    // 符の切り上げ忘れ・翻違い・符違い。同じ符・翻の役割違いは正解と
+    // 同じテキストになってしまうため候補にしない。
+    var altPairs = [];
+    function addAlt(f, h){
+      if (f < 20 || h < 1 || (f === fu && h === han)) return;
+      if (altPairs.some(function(p){ return p.fu === f && p.han === h; })) return;
+      altPairs.push({ fu:f, han:h });
     }
-    [han-1, han+1].forEach(function(h){
-      if (h >= 1){
-        distractorPool.push(calcScore(fu, h, isDealer).score);
-      }
-    });
-    distractorPool.push(calcScore(fu, han, !isDealer).score);
-    [fu-10, fu+10].forEach(function(f){
-      if (f >= 20){
-        distractorPool.push(calcScore(f, han, isDealer).score);
-      }
+    if (rawFu !== fu) addAlt(rawFu, han);
+    addAlt(fu, han - 1);
+    addAlt(fu, han + 1);
+    addAlt(fu - 10, han);
+    addAlt(fu + 10, han);
+
+    var altTexts = [];
+    shuffle(altPairs).forEach(function(p){
+      var t = pairText(p.fu, p.han);
+      if (t !== correctText && altTexts.indexOf(t) === -1) altTexts.push(t);
     });
 
-    var distractors = [];
-    shuffle(distractorPool).forEach(function(v){
-      if (distractors.length < 3 && v !== correct && distractors.indexOf(v) === -1) {
-        distractors.push(v);
-      }
-    });
-    // 万一候補が足りない場合の保険
-    var fallback = [correct + 100, correct - 100, correct * 2];
+    // 万一候補が足りない場合の保険（境界値付近など）
+    var fallbackHan = [han + 2, han - 2, 1, 4];
     var fi = 0;
-    while (distractors.length < 3 && fi < fallback.length){
-      var v = fallback[fi++];
-      if (v > 0 && v !== correct && distractors.indexOf(v) === -1) distractors.push(v);
+    while (altTexts.length < 3 && fi < fallbackHan.length){
+      var fh = fallbackHan[fi++];
+      if (fh >= 1){
+        var ft = pairText(fu, fh);
+        if (ft !== correctText && altTexts.indexOf(ft) === -1) altTexts.push(ft);
+      }
     }
 
-    var choices = shuffle([correct].concat(distractors));
+    var choiceTexts = shuffle([correctText].concat(altTexts.slice(0, 3)));
 
     current = {
       han:han, isDealer:isDealer, wait:wait, method:method, head:head, meld:meld,
-      fu:fu, rawFu:rawFu, base:result.base, mangan:result.mangan, correct:correct, answered:false
+      fu:fu, rawFu:rawFu, base:result.base, mangan:result.mangan, correct:correct,
+      correctText:correctText, answered:false
     };
 
     document.getElementById("roleBadge").textContent = isDealer ? "親" : "子";
@@ -183,12 +207,12 @@
 
     var wrap = document.getElementById("choices");
     wrap.innerHTML = "";
-    choices.forEach(function(v){
+    choiceTexts.forEach(function(t){
       var btn = document.createElement("button");
       btn.className = "choice";
       btn.type = "button";
-      btn.textContent = fmt(v);
-      btn.addEventListener("click", function(){ onAnswer(v, btn); });
+      btn.textContent = t;
+      btn.addEventListener("click", function(){ onAnswer(t, btn); });
       wrap.appendChild(btn);
     });
 
@@ -204,7 +228,7 @@
   function onAnswer(value, btnEl){
     if (current.answered) return;
     current.answered = true;
-    var isCorrect = value === current.correct;
+    var isCorrect = value === current.correctText;
 
     stats.total += 1;
     if (isCorrect){ stats.correct += 1; stats.streak += 1; }
@@ -215,8 +239,7 @@
     var buttons = document.querySelectorAll("#choices .choice");
     buttons.forEach(function(b){
       b.disabled = true;
-      var v = parseInt(b.textContent.replace(/[^0-9]/g,""),10);
-      if (v === current.correct) b.classList.add("correct");
+      if (b.textContent === current.correctText) b.classList.add("correct");
       else if (b === btnEl) b.classList.add("wrong");
       else b.classList.add("dim");
     });
