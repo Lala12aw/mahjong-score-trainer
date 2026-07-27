@@ -17,6 +17,7 @@
 
   paint("stat-step1", "hankei-drill-stats-v1");
   paint("stat-step2", "fu-drill-stats-v1");
+  paint("stat-step3", "step3-drill-stats-v1");
 
   Furigana.apply(document.body);
   Glossary.apply(document.body);

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; base-uri 'self'; form-action 'none'; object-src 'none';">
+<script src="antiframe.js"></script>
+<title>符＋翻の通し計算ドリル｜点数計算 特訓 STEP3</title>
+<link rel="stylesheet" href="styles.css">
+<script src="furigana.js"></script>
+<script src="glossary.js"></script>
+</head>
+<body>
+
+<div class="wrap">
+  <nav class="steps">
+    <a href="index.html">ホーム</a>
+    <a href="yomikata.html">読み方ガイド</a>
+    <a href="step1.html">STEP1 翻計算</a>
+    <a href="fu-drill.html">STEP2 符パーツ暗記</a>
+    <a href="step3.html" class="current">STEP3 通し計算</a>
+  </nav>
+
+  <header>
+    <div class="eyebrow"><span class="tile">南</span>STEP 3 ・ 符＋翻の総合練習</div>
+    <h1>符＋翻の通し計算ドリル</h1>
+    <p class="lede">STEP1で覚えた翻の点数と、STEP2で覚えた符の部品を組み合わせて、実際の点数を最初から最後まで計算します。手の内容から符を合計し、切り上げて、翻と掛け合わせるところまで練習しましょう。</p>
+  </header>
+
+  <div class="note">
+    <span class="note-mark">※</span>
+    <span>符は部品を全部足したあと、1の位を切り上げて10の位にします（例：22符→30符）。20符ちょうどならそのままです。</span>
+  </div>
+
+  <div class="panel">
+    <details class="explainer" id="explainer">
+      <summary>計算の流れをおさらいする</summary>
+      <div class="body">
+        <p>点数は次の手順で決まります。</p>
+        <div class="ex-row"><span>① 符を合計</span><strong>20（副底）＋待ち方＋和了り方＋頭＋面子</strong></div>
+        <div class="ex-row"><span>② 切り上げ</span><strong>1の位を10の位に切り上げ</strong></div>
+        <div class="ex-row"><span>③ 基本点</span><strong>符 × 2^(2＋翻)</strong></div>
+        <div class="ex-row"><span>④ 点数（ロン）</span><strong>子＝基本点×4／親＝基本点×6（100点未満切り上げ）</strong></div>
+        <p class="mt-note">③の基本点が2000を超えるときは2000点に頭打ちされ、満貫（子8,000点／親12,000点）になります。STEP1の「4翻はだいたい満貫」の話につながる部分です。</p>
+      </div>
+    </details>
+  </div>
+
+  <div class="scorebar">
+    <div class="stat"><b id="statCorrect">0</b><span>正解</span></div>
+    <div class="divider"></div>
+    <div class="stat"><b id="statTotal">0</b><span>出題数</span></div>
+    <div class="divider"></div>
+    <div class="stat"><b id="statStreak">0</b><span>連続正解</span></div>
+  </div>
+
+  <div class="qcard">
+    <div class="badges">
+      <span class="badge role" id="roleBadge">子</span>
+      <span class="badge method">ロン</span>
+      <span class="badge cat" id="hanBadge">2翻</span>
+    </div>
+
+    <div class="hand-summary">
+      <div class="hs-row"><span>待ち方</span><strong id="hsWait">両面待ち</strong></div>
+      <div class="hs-row"><span>和了り方</span><strong id="hsMethod">ロン・門前</strong></div>
+      <div class="hs-row"><span>頭</span><strong id="hsHead">数牌・客風の頭</strong></div>
+      <div class="hs-row"><span>面子</span><strong id="hsMeld">面子はすべて順子</strong></div>
+    </div>
+
+    <p class="qcaption">符と翻を合計すると、点数はいくつ？</p>
+    <div class="choices" id="choices"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="actions"><button class="next-btn" id="nextBtn">次の問題 →</button></div>
+  </div>
+
+  <footer>正解すると自動で記録されます（このブラウザ内のみ）。何度でもやり直せます。</footer>
+</div>
+
+<script src="step3.js"></script>
+
+</body>
+</html>
